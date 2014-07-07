@@ -4,7 +4,7 @@ from setuptools import find_packages
 
 setup(
     name='django-naremitimg',
-    version='0.1.0',
+    version='0.1.1',
     author=u'Jon Combe',
     author_email='pypi@joncombe.net',
     packages=find_packages(),
@@ -12,7 +12,7 @@ setup(
     url='https://github.com/naremit/NaremitIMG',
     license='BSD licence, see LICENCE file',
     description='A tiny Django app for performing image manipulations on the fly.',
-    long_description='A tiny Django app for performing image manipulations on the fly.',
+    long_description='NaremitIMG is tiny Django app which enables dynamic image manipulation on the fly. This could be used, for example, in conjunction with an online image editing tool, or to create thumbnails or to serve responsive images via a CDN.',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

@@ -210,7 +210,7 @@ class NaremitIMG:
                 raise Exception('Invalid rotate argument')
 
         # sharpness
-        if command == '':
+        if command == 'sharpness':
             try:
                 return ImageEnhance.Sharpness(self.im).enhance(float(args[0]))
             except:
