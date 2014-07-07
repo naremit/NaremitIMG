@@ -1,0 +1,2 @@
+include AUTHORS README LICENCE
+global-exclude *.pyc
