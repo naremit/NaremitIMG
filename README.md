@@ -1,13 +1,13 @@
 NaremitIMG
 ==========
 
-NaremitIMG is tiny Django app which enables dynamic image manipulation on the fly. This could be used, for example, in conjunction with an online image editing tool, or to create thumbnails or to serve responsive images via a CDN. This project is deliberately simple. 
+NaremitIMG is tiny Django app which enables dynamic image manipulation on the fly. This could be used, for example, in conjunction with an online image editing tool, or to create thumbnails or to serve responsive images via a CDN. This project is deliberately simple.
 
 Example usage:
 
     mywebsite.com/path/to/naremitimg?uri=http://mywebsite.com/images/frog.jpg&p=cropratio,1|resize,100,100|grayscale
 
-The code takes a _source image_ from a URL or a location on the webserver's filesystem, manipulates as per your instructions, then returns the _output image_. 
+The code takes a _source image_ from a URL or a location on the webserver's filesystem, manipulates as per your instructions, then returns the _output image_.
 
 Installation
 ------------
@@ -49,6 +49,7 @@ All parameters are passed in via GET request in the querystring. These are:
 #### Other:
 
  - `cache`: (optional) The length of time (in seconds) the _source image_ should be held in the Django cache for. This is useful if you are making a series of modifications to the same image, i.e. an online image manipulation tool for example.
+ - `optimize`: (optional) Attempt to make the file as small as possible without compromising quality. Only works for JPEG and PNG images. Usage: optimize=1
 
 Image Processing
 ----------------
@@ -82,7 +83,7 @@ This command accepts one floating-point number parameter. A number less than 1.0
         ?p=colorize,black,red
         ?p=colorize,%23000,%23f00 (note the '%23' replacement for the '#' sign when dealing with hex colors)
 Colorizes the image between the provided colors. Easier for you to try it than for me to explain. :)
-    
+
 #### Contour `USAGE: contour`
 
 #### Contrast `USAGE: contrast,[AMOUNT - FLOAT]`
@@ -95,11 +96,11 @@ Crop the image within the coordinates (from the top left corner) specified.
 
 #### Crop Ratio `USAGE: cropratio,[RATIO - FLOAT]`
     Example: ?p=cropratio,1.4
-Crops the image from the center to match the image ratio provided to it. Image ratio is calculated as (width / height), meaning a landscape image is greater than 1, a square image is 1 exactly, and a portrait image has a ratio of less than 1. 
+Crops the image from the center to match the image ratio provided to it. Image ratio is calculated as (width / height), meaning a landscape image is greater than 1, a square image is 1 exactly, and a portrait image has a ratio of less than 1.
 
 Use in conjuction with `resize` to create fixed size images, e.g. to create 80x120 thumbnails, use:
     ?p=cropratio,0.6666666666|resize,80,120
-    
+
 #### Emboss `USAGE: emboss`
 
 #### Equalize `USAGE: equalize`
@@ -110,7 +111,7 @@ Use in conjuction with `resize` to create fixed size images, e.g. to create 80x1
 
 #### Gaussian Blur `USAGE: gblur,[PIXELS - INTEGER]`
     Example: ?p=gblur,2
-Apply a Gaussian blur to the image. The second parameter is required and specifies the blur distance in pixels. 
+Apply a Gaussian blur to the image. The second parameter is required and specifies the blur distance in pixels.
 
 #### Invert `USAGE: invert`
 
@@ -153,15 +154,15 @@ Then, in your `settings.py` file, add the following:
     NAREMITIMG= {
         'secret': 'http://mysecretplace.example.com/images/',
     }
-    
+
 The code then simply appends the two strings together, e.g. `"%s%s" % (domain, uri)` to create the full URL. You can add as many entries to this dictionary as you like.
-  
+
 Contribute
 ----------
 This project needs more testing, units tests and for the documentation to be moved to a 'readthedocs' Sphinx style format for easier use. All help is welcomed and gratefully appreciated, however big or small.
 
-Before submitting a pull request, please ensure the docs are updated to reflect the changes you have made. We rely on your feedback so please report any bugs or comments, good or bad, via https://github.com/naremit/NaremitIMG/issues. 
+Before submitting a pull request, please ensure the docs are updated to reflect the changes you have made. We rely on your feedback so please report any bugs or comments, good or bad, via https://github.com/naremit/NaremitIMG/issues.
 
 Learn More
 ----------
-NaremitIMG was developed original by [Naremit, a digital agency based in Bangkok, Thailand](http://naremit.com). 
+NaremitIMG was developed original by [Naremit, a digital agency based in Bangkok, Thailand](http://naremit.com).

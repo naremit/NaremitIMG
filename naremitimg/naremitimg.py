@@ -6,15 +6,17 @@ from PIL import ImageOps
 from StringIO import StringIO
 import hashlib
 import urllib2
+
+from django.conf import settings
+from django.core.cache import cache
+from django.http import HttpResponse
+
+# attempt to import requests
 try:
     import requests
     has_requests = True
 except:
     has_requests = False
-
-from django.conf import settings
-from django.core.cache import cache
-from django.http import HttpResponse
 
 class NaremitIMG:
     format = 'JPEG'
@@ -268,7 +270,15 @@ class NaremitIMG:
     def response(self):
         r = HttpResponse(content_type='image/%s' % self.format.lower())
         try:
-            self.im.save(r, self.format)
+            saved = False
+            if 'optimize' in self.params:
+                try:
+                    self.im.save(r, self.format, optimize=1)
+                    saved = True
+                except:
+                    pass
+            if not saved:
+                self.im.save(r, self.format)
         except:
             raise Exception('Invalid image format defined')
         return r
