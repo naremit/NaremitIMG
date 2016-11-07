@@ -21,7 +21,7 @@ Once this is done:
  2. Add `'naremitimg'` to your `INSTALLED_APPS` in your Django project's `settings.py` file<br /><br />
  3. Add an entry to your `urls.py` file as follows:<br />`url(r'^path/to/naremitimg$', 'naremitimg.views.img')`
 
-There are some optional settings which can be applied (see the "domain" section below). Be sure your Django project has an [appropriate cache settings](https://docs.djangoproject.com/en/dev/topics/cache/) if you wish to take advantage of the caching functionality.
+There are some optional settings which can be applied (see the "domain" section below).
 
 Quickstart
 ----------
@@ -48,7 +48,10 @@ All parameters are passed in via GET request in the querystring. These are:
 
 #### Other:
 
- - `cache`: (optional) The length of time (in seconds) the _source image_ should be held in the Django cache for. This is useful if you are making a series of modifications to the same image, i.e. an online image manipulation tool for example.
+ - `cache`: (optional) `1` (yes) or `0` (no). Stores a local copy on your server to prevent repeated downloads. By default, the temporary files are help in the `/tmp` folder but you can changes this by adding `NAREMITIMG_TMP_FOLDER` to you config (Note: paths must end with a trailing slash).
+
+   Note: NaremitIMG does not delete old files from your specified cache folder. I suggest running a frequently scheduled task (e.g. a cronjob) which deletes old `naremitimg_*` files in this folder.
+
  - `optimize`: (optional) Attempt to make the file as small as possible without compromising quality. Only works for JPEG and PNG images. Usage: optimize=1
 
 Image Processing

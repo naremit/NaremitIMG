@@ -5,10 +5,11 @@ from PIL import ImageOps
 
 from StringIO import StringIO
 import hashlib
+import pickle
+import os
 import urllib2
 
 from django.conf import settings
-from django.core.cache import cache
 from django.http import HttpResponse
 
 # attempt to import requests
@@ -29,7 +30,7 @@ class NaremitIMG:
         # extract cache value
         if 'cache' in self.params:
             try:
-                self.cache = int(self.params['cache'])
+                self.cache = int(self.params['cache']) > 0
             except:
                 pass
 
@@ -56,6 +57,14 @@ class NaremitIMG:
                     args = p.split(',')
                     command = args.pop(0)
                     self.im = self.process(command, args)
+
+    def download(self, url):
+        if has_requests:
+            r = requests.get(url)
+            return r.content
+        else:
+            r = urllib2.urlopen(url)
+            return f.read()
 
     def process(self, command, args):
         # autocontrast
@@ -235,6 +244,9 @@ class NaremitIMG:
             raise Exception('Image not found or of invalid format')
 
     def load_from_uri(self):
+        save_local_copy = False
+        tmp_folder = getattr(settings, 'NAREMITIMG_TMP_FOLDER', '/tmp/')
+
         # construct remote image url
         url = self.params['uri']
         if 'domain' in self.params:
@@ -244,28 +256,20 @@ class NaremitIMG:
             except:
                 raise Exception('Domain "%s" not found in config' % domain)
 
-        # don't bother retrieve image from web if it exists in the cache
-        if self.cache > 0:
-            cache_key = 'naremitimg_%s' % hashlib.sha224(url).hexdigest()
-            self.im = cache.get(cache_key)
-            if self.im is not None:
-                cache.set(cache_key, self.im, self.cache)
-                return
+        if self.cache:
+            tmp_file = '%snaremitimg_%s' % (tmp_folder, hashlib.sha224(url).hexdigest())
+            if not os.path.isfile(tmp_file):
+                with open(tmp_file, 'wb') as f:
+                    f.write(self.download(url))
+            self.im = Image.open(tmp_file)
+            return
 
         # load image
         try:
-            if has_requests:
-                f = requests.get(url)
-                self.im = Image.open(StringIO(f.content))
-            else:
-                f = urllib2.urlopen(url)
-                self.im = Image.open(StringIO(f.read()))
+            content = self.download(url)
+            self.im = Image.open(StringIO(content))
         except:
             raise Exception('Image not found or of invalid format')
-
-        # save to cache
-        if self.cache > 0:
-            cache.set(cache_key, self.im, self.cache)
 
     def response(self):
         r = HttpResponse(content_type='image/%s' % self.format.lower())
